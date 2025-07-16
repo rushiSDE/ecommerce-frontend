@@ -1,95 +1,76 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
 
-export default function Home() {
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { fetchProducts } from '../../services/productService';
+import { useCart } from '../../context/CartContext';
+import Swal from 'sweetalert2'; // SweetAlert2
+
+export default function HomePage() {
+  const [products, setProducts] = useState([]);
+  const { addToCart } = useCart();
+  const router = useRouter();
+
+  useEffect(() => {
+    fetchProducts().then(setProducts);
+  }, []);
+
+  // Show SweetAlert on Add to Cart
+  const handleAddToCart = (product: any) => {
+    addToCart(product);
+
+    Swal.fire({
+      title: 'Added to Cart!',
+      text: `${product.name} has been added.`,
+      icon: 'success',
+      timer: 1500,
+      showConfirmButton: false,
+    });
+  };
+
+  // Redirect to Checkout with Product
+  const handlePlaceOrder = (product: any) => {
+    addToCart(product);
+    router.push('/checkout');
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">🛍️ Available Products</h1>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {products.map((product: any) => (
+          <div
+            key={product.id}
+            className="border rounded-lg shadow hover:shadow-lg bg-white p-4 flex flex-col items-center"
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <img
+              src={product.image || 'https://via.placeholder.com/150'}
+              alt={product.name}
+              className="w-full h-48 object-cover rounded mb-4"
             />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+            <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
+            <p className="text-gray-600 text-sm mb-1">{product.description}</p>
+            <p className="text-green-700 font-bold text-base mb-3">₹{product.price}</p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => handleAddToCart(product)}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded text-sm"
+              >
+                🛒 Add to Cart
+              </button>
+              <button
+                onClick={() => handlePlaceOrder(product)}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded text-sm"
+              >
+                ✅ Place Order
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

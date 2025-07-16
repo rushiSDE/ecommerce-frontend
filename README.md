@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 E-Commerce Frontend
 
-## Getting Started
+This is the **frontend** application of a microservices-based e-commerce system built using **Next.js** and **Tailwind CSS**. It connects to two backend services (Product-Order and Customer Service) to enable users to:
 
-First, run the development server:
+- Browse products
+- Add items to a cart
+- Place an order
+- View past orders
+
+---
+
+## 🔧 Tech Stack
+
+| Tech             | Purpose                                      |
+|------------------|----------------------------------------------|
+| **Next.js 14**   | React-based frontend framework                |
+| **Tailwind CSS** | Utility-first CSS framework                   |
+| **Axios**        | HTTP client for calling APIs                  |
+| **SweetAlert2**  | Alert popups (for success/failure messages)   |
+| **React Context**| Global cart state                             |
+
+---
+
+## 📁 Project Structure
+
+ecommerce-frontend/
+├── app/ # Pages and routes (Next.js App Router)
+│ ├── page.tsx # Home page (Product listing)
+│ ├── cart/ # Cart page (items added)
+│ ├── checkout/ # Checkout form
+│ ├── orders/ # Order history page
+├── context/
+│ └── CartContext.tsx # React Context for global cart state
+├── services/
+│ ├── api.ts # Axios instances for each backend service
+│ ├── orderService.ts # Order-related API functions
+│ ├── productService.ts # Product API functions
+│ └── customerService.ts # Customer API functions (optional)
+├── public/
+│ └── screens/ # Screenshots or assets (optional)
+├── styles/
+│ └── globals.css # Tailwind base styles
+├── tailwind.config.js # Tailwind config
+├── next.config.js # Domain whitelist for external images
+├── package.json # Project dependencies and scripts
+└── README.md
+
+yaml
+Copy
+Edit
+
+---
+
+## 🌐 Features
+
+✅ **Product Listing**  
+✅ **Add to Cart**  
+✅ **Checkout with name,phone**  
+✅ **Submit order to backend via Rabitmq**  
+✅ **Order history view**  
+✅ **SweetAlert feedback popups**  
+✅ **Responsive layout with Tailwind CSS**  
+✅ **Image rendering using Unsplash links**
+
+---
+
+## 🚀 Getting Started
+
+### 📦 Prerequisites
+
+- Node.js `v18+`
+- npm or yarn
+- Running backend services:
+  - Product-Order Service (on `http://localhost:3000`)
+  - Customer Service (on `http://localhost:3001`)
+
+---
+
+### 🔨 Installation
 
 ```bash
+# Clone the project
+git clone https://github.com/yourusername/ecommerce-frontend.git
+
+# Enter project folder
+cd ecommerce-frontend
+
+# Install dependencies
+npm install
+▶️ Running the App
+bash
+Copy
+Edit
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Visit: http://localhost:3000
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+⚙️ Image Config (Already Set)
+js
+Copy
+Edit
+// next.config.js
+module.exports = {
+  images: {
+    domains: ['images.unsplash.com', 'via.placeholder.com'],
+  },
+};
+🔌 API Integration
+All API functions are defined in /services.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+API	File	Description
+GET /products	productService.ts	Fetch product list
+POST /orders	orderService.ts	Create a new order
+GET /orders	orderService.ts	Get all past orders
+PATCH /orders/:id	orderService.ts	Cancel an existing order
+GET /customers	customerService.ts	Fetch customer data (optional)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+All services use Axios with separate base URLs for each backend microservice.
 
-## Learn More
+💳 Checkout Form
+Form takes:
 
-To learn more about Next.js, take a look at the following resources:
+Name
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Phone
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Then sends order details with:
 
-## Deploy on Vercel
+Cart items (product IDs)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Total amount
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
