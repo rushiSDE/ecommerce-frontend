@@ -128,6 +128,3 @@ Then sends order details with:
 Cart items (product IDs)
 
 Total amount
-
-
-

@@ -1,0 +1,10 @@
+services:
+  ecommerce-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000" # Matches next start -p 8000
+    environment:
+      NODE_ENV: production
+    command: ["npm", "start"]
